@@ -27,12 +27,14 @@ import androidx.core.content.ContextCompat;
 
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Point;
 
@@ -110,29 +112,45 @@ public class MainActivity extends AppCompatActivity {
                 Mat frame = new Mat(textureBitmap.getHeight(), textureBitmap.getWidth(), CvType.CV_8UC4);
                 Utils.bitmapToMat(textureBitmap, frame);
 
-                Mat grayFrame = new Mat();
-                Imgproc.cvtColor(frame, grayFrame, Imgproc.COLOR_RGBA2GRAY);
+                // Convert RGBA image to RGB
+                Mat rgb = new Mat();
+                Imgproc.cvtColor(frame, rgb, Imgproc.COLOR_RGBA2RGB);
 
-                Imgproc.GaussianBlur(grayFrame, grayFrame, new org.opencv.core.Size(5, 5), 0);
+                // Convert the RGB image to HSV
+                Mat hsv = new Mat();
+                Imgproc.cvtColor(rgb, hsv, Imgproc.COLOR_RGB2HSV);
 
-                Mat thresholded = new Mat();
-                Imgproc.threshold(grayFrame, thresholded, 127, 255, Imgproc.THRESH_BINARY);
+                // Extract the Value channel
+                List<Mat> hsvChannels = new ArrayList<>();
+                Core.split(hsv, hsvChannels);
+                Mat valueChannel = hsvChannels.get(2);
 
-                List<MatOfPoint> contours = new ArrayList<>();
-                Mat hierarchy = new Mat();
-                Imgproc.findContours(thresholded, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+                // Threshold the Value channel for high light intensity
+                double highIntensityThreshold = 200; // Adjust based on the intensity of the reflection
+                Mat highIntensityAreas = new Mat();
+                Imgproc.threshold(valueChannel, highIntensityAreas, highIntensityThreshold, 255, Imgproc.THRESH_BINARY);
 
-                Imgproc.drawContours(frame, contours, -1, new Scalar(0, 255, 0), 2);
+                // Use morphological operations to close gaps and remove noise
+                Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(15, 15));  // Adjust the size for desired dilation/erosion
+                Imgproc.morphologyEx(highIntensityAreas, highIntensityAreas, Imgproc.MORPH_CLOSE, kernel);
 
+                // Overlay these high-intensity areas on the original frame using a color to highlight
+                frame.setTo(new Scalar(0, 255, 0), highIntensityAreas);
+
+                // Convert the processed frame back to Bitmap and update ImageView
                 Bitmap processedBitmap = Bitmap.createBitmap(frame.cols(), frame.rows(), Bitmap.Config.ARGB_8888);
                 Utils.matToBitmap(frame, processedBitmap);
                 runOnUiThread(() -> processImageView.setImageBitmap(processedBitmap));
 
-                frame.release();
-                grayFrame.release();
-                thresholded.release();
-                hierarchy.release();
+                // Release memory
+                rgb.release();
+                hsv.release();
+                valueChannel.release();
+                highIntensityAreas.release();
             }
+
+
+
 
         });
 
@@ -203,6 +221,9 @@ public class MainActivity extends AppCompatActivity {
             SurfaceTexture surfaceTexture = textureView.getSurfaceTexture();
             Surface previewSurface = new Surface(surfaceTexture);
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+
+            captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF);
+
             captureRequestBuilder.addTarget(previewSurface);
             cameraDevice.createCaptureSession(Collections.singletonList(previewSurface),
                     new CameraCaptureSession.StateCallback() {
