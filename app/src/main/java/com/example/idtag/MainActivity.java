@@ -126,13 +126,18 @@ public class MainActivity extends AppCompatActivity {
                 Mat valueChannel = hsvChannels.get(2);
 
                 // Threshold the Value channel for high light intensity
-                double highIntensityThreshold = 200; // Adjust based on the intensity of the reflection
+                double highIntensityThreshold = 50; // Adjust based on the intensity of the reflection
                 Mat highIntensityAreas = new Mat();
                 Imgproc.threshold(valueChannel, highIntensityAreas, highIntensityThreshold, 255, Imgproc.THRESH_BINARY);
 
+                // Adaptive threshold
+//                Imgproc.adaptiveThreshold(valueChannel, highIntensityAreas, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 1001, 5);
+
                 // Use morphological operations to close gaps and remove noise
                 Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(15, 15));  // Adjust the size for desired dilation/erosion
+//                Imgproc.morphologyEx(highIntensityAreas, highIntensityAreas, Imgproc.MORPH_OPEN, kernel);
                 Imgproc.morphologyEx(highIntensityAreas, highIntensityAreas, Imgproc.MORPH_CLOSE, kernel);
+
 
                 // Overlay these high-intensity areas on the original frame using a color to highlight
                 frame.setTo(new Scalar(0, 255, 0), highIntensityAreas);
