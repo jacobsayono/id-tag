@@ -7,11 +7,15 @@ Using the flashlight of the mobile device, the light bounces back to the camera 
 Check out the other version of this app, which performs real-time analysis by plotting light intensities in real-time for high framerate applications: https://github.com/jacobsayono/lightintensityapp
 
 ![Description of GIF](/assets/IMG_5477.gif)
+
 Note: Light intensity thresholds may need better adjustments to prevent tracking bright backgrounds. For example:
+
 ![Description of GIF](/assets/20231012_171446.gif)
 
 ![Description of GIF](/assets/outward.gif)
+
 ![Description of GIF](/assets/outward_1.gif)
 
 `lightintensityapp` video demo:
+
 ![Description of GIF](/assets/rbb.gif)
