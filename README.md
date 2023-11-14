@@ -14,7 +14,7 @@ For example:
 
 ![Description of GIF](/assets/20231012_171446.gif)
 
-Orientation sensing:
+Orientation sensing (collaboration with Texas A&M University):
 
 ![Description of GIF](/assets/outward.gif)
 ![Description of GIF](/assets/outward_1.gif)
