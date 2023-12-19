@@ -23,7 +23,6 @@ Orientation sensing (collaboration with Texas A&M University who uses this app t
 
 Some personal notes:
 ![Description](/assets/rotary.jpg)
-
 ![Description](/assets/spiral.jpg)
 
 ![Description](/assets//decode.jpg)
