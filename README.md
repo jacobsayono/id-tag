@@ -21,6 +21,13 @@ Orientation sensing (collaboration with Texas A&M University who uses this app t
 ![Description of GIF](/assets/outward.gif)
 ![Description of GIF](/assets/outward_1.gif)
 
+Some personal notes:
+![Description](/assets/rotary.jpg)
+
+![Description](/assets/spiral.jpg)
+
+![Description](/assets//decode.jpg)
+
 `lightintensityapp` video demo (from https://github.com/jacobsayono/lightintensityapp):
 
 ![Description of GIF](/assets/rbb.gif)
