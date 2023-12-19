@@ -22,6 +22,7 @@ Orientation sensing (collaboration with Texas A&M University who uses this app t
 ![Description of GIF](/assets/outward_1.gif)
 
 Some personal notes:
+
 ![Description](/assets/rotary.jpg)
 ![Description](/assets/spiral.jpg)
 
